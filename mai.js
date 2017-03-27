@@ -58,12 +58,6 @@ pixiloader.add('map',BEATMAP)
     .add('audio_perfect', "asset/sound/perfect.mp3")
     .add('audio_flick', "asset/sound/flick.mp3")
     .add('audio_music', "night.mp3")
-    // .add('map', "beatmap/maidadada.json")
-    // .add('img_tap', "asset/image/tap.png")
-    // .add('img_bg', 'asset/image/release_bg.png')
-    // .add('audio_perfect', "asset/sound/perfect.mp3")
-    // .add('audio_flick', "asset/sound/flick.mp3")
-    // .add('audio_music', "music/dadada.mp3")
     .load(gameLoad);
 var SPEED = 366;
 var noteResList = [];
@@ -75,18 +69,10 @@ function gameLoad(loader, resources)
 {
     //load game
     app.stage.visible = false;
-    // var bg = new PIXI.Sprite(resources['img_bg'].texture);
-    // app.stage.addChild(bg);
-
-    //load res
-    console.log(resources['img_tap']);
-    // console.log(noteResList[0]);
-    //
     noteResList.push(resources['img_tap']);
     noteResList.push(resources['img_double']);
     noteResList.push(resources['img_hold']);
     noteResList.push(resources['img_line']);
-
     //load map
     var map = loader.resources['map'].data;
     for (var i = 0;i < map.notes.length; i++)
@@ -101,25 +87,13 @@ function gameLoad(loader, resources)
             var note = new Hold(map.notes[i]['type'], (map.notes[i]['time']*map.bpm + map.offset) * 1000, map.notes[i]['position']-1, map.notes[i]['double'],map.notes[i]['holdtime']*map.bpm*1000);
             holdMap[map.notes[i]['position']-1].push(note);
         }
-        // tap.draw();
-        // tap.add();
-        // console.log(map.notes[i]['time']);
     }
-    console.log(tapMap);
-    console.log(holdMap);
     for (var i = 0;i < 8; i++)
     {
         var tap = new Tap(0,0,0,0);
         tap.draw();
         tap.set(judgePosition[i][0],judgePosition[i][1]);
     }
-    // for (var i = 0;i < 8; i++)
-    // {
-    //     var tap = new Tap(0,0,0,0);
-    //     tap.draw();
-    //     tap.set(startPosition[i][0],startPosition[i][1]);
-    // }
-
     //load audio
     new WebAudioDecoder()
         .add('audio_music',resources['audio_music'].data)
@@ -142,21 +116,16 @@ function onAudioDecoded(res)
     app.view.addEventListener("touchstart",onMouseDown);
     app.view.addEventListener("touchend",onMouseUp);
     app.view.addEventListener("mousedown",onMouseDown);
-    // app.view.addEventListener("mouseup",onMouseUp);
-    // app.view.addEventListener("touchend",onFingerUp);
 
     waitDisplay = new WaitDisplay();
     display = new Display();
     display.addCombo()
 
-    // music.play();
     waitDisplay.show();
     update();
 }
 function transPositiontoArea(x,y)
 {
-    // x = x;
-    // y = y;
     if(x<y)
         if(x+y<SIZE)
             if(y<SIZE/2)
@@ -184,10 +153,6 @@ function transPositiontoArea(x,y)
 
 function update()
 {
-    //tap
-    // console.log(music.getTime()-updatetime);
-    // updatetime = music.getTime();
-
     for (var i = 0; i < 8; i++)
     {
         if ((tapMap[i].length!=0)&&((music.getTime()-tapMap[i][0].time)>130))//miss
@@ -203,7 +168,6 @@ function update()
 
         if ((holdMap[i].length!=0)&&(!holdMap[i][0].hoding)&&((music.getTime()-holdMap[i][0].time)>130))//miss
         {
-            // noteMap[i][0].destroy();
             holdMap[i][0].destroy(holdMap[i][0].headsprite);
             holdMap[i][0].destroy(holdMap[i][0].pigusprite);
             holdMap[i].shift();
@@ -212,7 +176,6 @@ function update()
         }
         if ((holdMap[i].length!=0)&&(holdMap[i][0].hoding)&&((music.getTime()-holdMap[i][0].time-holdMap[i][0].holdtime)>130))//miss
         {
-            // noteMap[i][0].destroy();
             holdMap[i][0].destroy(holdMap[i][0].pigusprite);
             holdMap[i].shift();
             console.log("miss");
@@ -220,7 +183,6 @@ function update()
         }
         for (var j = 0; j < holdMap[i].length; j++)
             holdMap[i][j].update(music.getTime());
-
         display.update();
     }
     if (music.getIsEnd())
@@ -285,8 +247,7 @@ function onMouseDown(e)
                     console.log("good");
                     display.add(touchArea,2);
                 }
-    }
-
+        }
     }
 }
 function onMouseUp(e)
@@ -350,14 +311,9 @@ Tap.prototype = {
         //time -> 当前时间
         if((this.time - time < SPEED)&&(time-this.time < 130))//移动note时间区间
         {
-            // if(!this.drawed&&(time - this.time < 5000))
-            // console.log(this.time);
-            // console.log(time);
             var x = (judgePosition[this.position][0] - startPosition[this.position][0])*(this.time-time)/SPEED-judgePosition[this.position][0];
             var y = (judgePosition[this.position][1] - startPosition[this.position][1])/SPEED*(this.time-time)-judgePosition[this.position][1];
             this.set(-x, -y);
-            // console.log("jp"+judgePosition[this.position][0]+"sp"+startPosition[this.position][0]);
-            // console.log("x"+x+"y"+y);
         }
         else if((this.time - time < SPEED + 0.55*SPEED))//note放大时间区间
         {
@@ -371,16 +327,12 @@ Tap.prototype = {
             var ysize = 60/this.sprite.height/SPEED*(time-(this.time-SPEED-SPEED));
             this.sprite.scale.x = xsize;
             this.sprite.scale.y = xsize;
-
         }
-        //     this.destroy();
     },
     draw:function () {
         this.rsize = 50/this.sprite.height;
         this.sprite.scale.x *= 0.0001;
         this.sprite.scale.y *= 0.0001;
-
-        // this.set(300,300);
         this.sprite.anchor.set(0.5);
         app.stage.addChild(this.sprite);
     },
@@ -413,8 +365,6 @@ var Hold = function (type, time, position, double, holdtime)
 }
 Hold.prototype = {
     update:function (time) {
-
-        // this.drawline();
         //this.time -> 判定时间，perfect时间
         //time -> 当前时间
         if((this.time - time < SPEED))//head 移动时间
@@ -427,8 +377,6 @@ Hold.prototype = {
                 this.headsprite.x = judgePosition[this.position][0];
                 this.headsprite.y = judgePosition[this.position][1];
             }
-
-            // console.log(time);
             if (!this.hoding)
             {
 
@@ -436,9 +384,6 @@ Hold.prototype = {
                 var y = (judgePosition[this.position][1] - startPosition[this.position][1])/SPEED*(this.time-time)-judgePosition[this.position][1];
                 this.set(this.headsprite,-x, -y);
             }
-
-            // console.log("jp"+judgePosition[this.position][0]+"sp"+startPosition[this.position][0]);
-            // console.log("x"+x+"y"+y);
         }
         else if((this.time - time < SPEED + 0.5*SPEED)&&(this.hoding == false))//head放大时间区间
         {
@@ -451,12 +396,9 @@ Hold.prototype = {
             if(!this.pigudrawed)
             {
                 this.set(this.pigusprite,startPosition[this.position][0],startPosition[this.position][1]);
-                // this.pigusprite.scale.x = this.rsize;
-                // this.pigusprite.scale.y = this.rsize;
                 app.stage.addChild(this.pigusprite);
                 this.pigudrawed = true;
             }
-            // var xsize = 60/this.sprite.height/SPEED*(time-(this.time-SPEED-SPEED));
             var xsize = (time-(this.time-SPEED-SPEED))/SPEED*this.rsize;
             this.headsprite.scale.x = xsize;
             this.headsprite.scale.y = xsize;
@@ -471,26 +413,16 @@ Hold.prototype = {
             var y = (judgePosition[this.position][1] - startPosition[this.position][1])/SPEED*(this.time-time+this.holdtime)-judgePosition[this.position][1];
             this.set(this.pigusprite,-x, -y);
         }
-
-        //draw line
-
-        // else if(time - this.time > 130)
-        //     this.destroy();
     },
     draw:function () {
         this.headsprite.anchor.x = 0.5;
         this.headsprite.anchor.y = 0.9;
         this.pigusprite.anchor.x = 0.5;
         this.pigusprite.anchor.y = 0.9;
-        // this.headsprite.anchor.set(0.5);
-        //
-        // this.pigusprite.anchor.set(0.5);
-
         this.rsize = 50/this.headsprite.width;
 
         this.headsprite.scale.x *= 0.0001;
         this.headsprite.scale.y *= 0.0001;
-        // this.set(this.headsprite,400,300);
 
         this.headsprite.rotation += 3.14159265358979323846/8 * (this.position*2+1);
         this.pigusprite.rotation += this.headsprite.rotation + 3.14159265358979323846;
@@ -507,27 +439,11 @@ Hold.prototype = {
         app.stage.removeChild(this.linegraphics);
     },
     drawline:function () {
-        // console.log("dddd");
-        // this.linegraphics.beginFill(0xFF3300);
-        // this.linegraphics.lineStyle(4, 0xffd900, 1);
-        // this.linegraphics.moveTo(this.pigusprite.x,this.pigusprite.y);
-        // this.linegraphics.lineTo(this.headsprite.x,this.headsprite.y);
         if((judgePosition[this.position][0]>startPosition[this.position][0]&&this.pigusprite.x<this.headsprite.x)||(judgePosition[this.position][0]<startPosition[this.position][0]&&this.pigusprite.x>this.headsprite.x))
             if(this.hoding)
             {
                 app.stage.removeChild(this.linegraphics);
                 this.linegraphics = new PIXI.Sprite(noteResList[3].texture);
-                // this.linegraphics.anchor.set(0.5);
-                // var linetempx=10;
-                // var linetempy=-10;
-                // if(8>this.position>3)
-                //     linetempx*=-1;
-                // if(6>this.position>1)
-                //     linetempy*=-1;
-                // this.linegraphics.x = (this.headsprite.x+this.pigusprite.x)/2+linetempx;
-                // this.linegraphics.y = (this.headsprite.y+this.pigusprite.y)/2+linetempy;
-                // this.linegraphics.scale.x *= this.rsize;
-                // this.linegraphics.scale.y *=2+ Math.sqrt(Math.pow(this.headsprite.y - this.pigusprite.y,2)+ Math.pow(this.headsprite.x - this.pigusprite.x,2));
                 this.linegraphics.anchor.x = 0.5;
                 this.linegraphics.x = this.pigusprite.x;
                 this.linegraphics.y = this.pigusprite.y;
@@ -540,20 +456,9 @@ Hold.prototype = {
             else {
                 app.stage.removeChild(this.linegraphics);
                 this.linegraphics = new PIXI.Sprite(noteResList[3].texture);
-                // this.linegraphics.anchor.set(0.5);
                 this.linegraphics.anchor.x = 0.5;
-
-                // var linetempx=10;
-                // var linetempy=-10;
-                // if(8>this.position>3)
-                //     linetempx*=-1;
-                // if(6>this.position>1)
-                //     linetempy*=-1;
-                // this.linegraphics.x = (this.headsprite.x*1.1+this.pigusprite.x)/2.1;
-                // this.linegraphics.y = (this.headsprite.y*1.1+this.pigusprite.y)/2.1;
                 this.linegraphics.x = this.pigusprite.x;
                 this.linegraphics.y = this.pigusprite.y;
-                // this.linegraphics.scale.x *= this.rsize;
                 this.linegraphics.scale.x = this.headsprite.scale.x;
                 this.linegraphics.scale.y = 15 + Math.sqrt(Math.pow(this.headsprite.y - this.pigusprite.y,2)+ Math.pow(this.headsprite.x - this.pigusprite.x,2));
                 this.linegraphics.rotation += 3.14159265358979323846/8 * (this.position*2+1+8);
@@ -612,7 +517,6 @@ var Display = function() {
     this.combo.position.set(540/2,540/2);
     this.combo.anchor.set(0.5,0.5)
     this.combonum = 0;
-    // this.combo.setText(this.combonum);
     this.combotext = new PIXI.Text("combo", {
         fontFamily: 'Arial',
         fontSize: 35,
