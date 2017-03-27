@@ -178,8 +178,8 @@ function update()
         {
             holdMap[i][0].destroy(holdMap[i][0].pigusprite);
             holdMap[i].shift();
-            console.log("miss");
-            display.add(i,3);
+            console.log("good pigu");
+            display.add(i,2);
         }
         for (var j = 0; j < holdMap[i].length; j++)
             holdMap[i][j].update(music.getTime());
@@ -288,8 +288,8 @@ function onMouseUp(e)
                 holdMap[touchArea][0].hoding = false;
                 holdMap[touchArea][0].destroy(holdMap[touchArea][0].pigusprite);
                 holdMap[touchArea].shift();
-                console.log("miss");
-                display.add(touchArea,3);
+                console.log("miss pigu good");
+                display.add(touchArea,2);
             }
     }
 }
