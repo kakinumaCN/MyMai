@@ -50,14 +50,14 @@ PIXI.loaders.Resource.setExtensionXhrType("mp3", PIXI.loaders.Resource.XHR_RESPO
 PIXI.loaders.Resource.setExtensionLoadType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
 const pixiloader = PIXI.loader;
 pixiloader.add('map',BEATMAP)
-    .add('img_tap', "asset/image/tap.png")
-    .add('img_double', "asset/image/double.png")
-    .add('img_hold', "asset/image/hold.png")
-    .add('img_line', "asset/image/line.png")
-    .add('img_bg', 'asset/image/release_bg.png')
-    .add('audio_perfect', "asset/sound/perfect.mp3")
-    .add('audio_flick', "asset/sound/flick.mp3")
-    .add('audio_music', "night.mp3")
+    .add('img_tap', "../../asset/image/tap.png")
+    .add('img_double', "../../asset/image/double.png")
+    .add('img_hold', "../../asset/image/hold.png")
+    .add('img_line', "../../asset/image/line.png")
+    .add('img_bg', '../../asset/image/release_bg.png')
+    .add('audio_perfect', "../../asset/sound/perfect.mp3")
+    .add('audio_flick', "../../asset/sound/flick.mp3")
+    .add('audio_music', "track.mp3")
     .load(gameLoad);
 var SPEED = 366;
 var noteResList = [];
