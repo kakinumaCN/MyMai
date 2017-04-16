@@ -1,4 +1,4 @@
-var WELCOME = "Welcome to MyMai ver 0.406.2"
+var WELCOME = "Welcome to MyMai ver 0.410.1"
 console.log(WELCOME);
 var app = new PIXI.Application(540,540);
 var SCREEN_WIDTH = window.innerWidth;
@@ -378,14 +378,15 @@ function onMouseMove(e){
     {
         movepre = transPositiontoMoveArea(e.clientX,e.clientY);
         console.log(transPositiontoMoveArea(e.clientX,e.clientY));
+        tapSE.play()
         Down(e.clientX,e.clientY);
-        // display.debugtext.setText(display.debugtext.text+"|"+transPositiontoMoveArea(e.clientX,e.clientY));
+        display.debugtext2.setText(display.debugtext2.text+"|"+transPositiontoMoveArea(e.clientX,e.clientY));
 
-        display.debugtextcount += 1;
-        if(display.debugtextcount == 16)
+        display.debugtext2count += 1;
+        if(display.debugtext2count == 16)
         {
-            display.debugtext.setText("0");
-            display.debugtextcount = 0;
+            display.debugtext2.setText("0");
+            display.debugtext2count = 0;
         }
     }
     movepre = transPositiontoMoveArea(e.clientX,e.clientY);
@@ -632,6 +633,16 @@ var Display = function() {
     this.debugtext.position.set(0,0);
     app.stage.addChild(this.debugtext);
     this.debugtextcount = 0;
+
+    this.debugtext2 = new PIXI.Text("0", {
+        fontFamily: 'Arial',
+        fontSize: 20,
+        fill: 'red',
+        fontWeight:'bold'
+    });
+    this.debugtext2.position.set(0,30);
+    app.stage.addChild(this.debugtext2);
+    this.debugtext2count = 0;
 }
 Display.prototype = {
     addCombo:function(){
