@@ -1,6 +1,10 @@
-var WELCOME = "Welcome to MyMai ver 0.410.1"
+var WELCOME = "Welcome to MyMai ver 0.422.1"
 console.log(WELCOME);
+// var canvas = document.getElementById('canvas');
+// var canvas = document.createElement('canvas');
+// canvas.id = 'canvas'
 var app = new PIXI.Application(540,540);
+// app.view = document.getElementById('canvas');
 var SCREEN_WIDTH = window.innerWidth;
 var SCREEN_HEIGHT = window.innerHeight;
 var SIZE = 0;
@@ -46,6 +50,8 @@ for(var i=0;i<8;i++)
 
 
 document.body.appendChild(app.view);
+// console.log(canvas);
+console.log(app.view);
 PIXI.loaders.Resource.setExtensionXhrType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
 PIXI.loaders.Resource.setExtensionLoadType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
 const pixiloader = PIXI.loader;
@@ -113,16 +119,9 @@ function onAudioDecoded(res)
     //ロード画面消去
     document.body.removeChild(document.getElementById("loading"));
     app.stage.visible = true;
-    app.view.addEventListener("touchstart",onPadDown);
+    app.view.addEventListener("touchstart",onMouseDown);
     app.view.addEventListener("touchend",onMouseUp);
-    app.view.addEventListener("touchmove",onMouseMove);
-
     app.view.addEventListener("mousedown",onMouseDown);
-    app.view.addEventListener("mousemove",onMouseMove);
-    app.view.addEventListener("mouseup",onMouseUp);
-
-
-
 
     waitDisplay = new WaitDisplay();
     display = new Display();
@@ -131,9 +130,6 @@ function onAudioDecoded(res)
     waitDisplay.show();
     update();
 }
-
-
-
 function transPositiontoArea(x,y)
 {
     if(x<y)
@@ -159,61 +155,19 @@ function transPositiontoArea(x,y)
     else
         return 7;
 }
-function transPositiontoMoveArea(x,y)
-{
-    x = x/SIZE*540;
-    y = y/SIZE*540;
-    if (Math.sqrt(Math.pow((x-judgePosition[0][0]),2)+Math.pow((y-judgePosition[0][1]),2))<30)
-        return -1;
-    if (Math.sqrt(Math.pow((x-judgePosition[1][0]),2)+Math.pow((y-judgePosition[1][1]),2))<30)
-        return -2;
-    if (Math.sqrt(Math.pow((x-judgePosition[2][0]),2)+Math.pow((y-judgePosition[2][1]),2))<30)
-        return -3;
-    if (Math.sqrt(Math.pow((x-judgePosition[3][0]),2)+Math.pow((y-judgePosition[3][1]),2))<30)
-        return -4;
-    if (Math.sqrt(Math.pow((x-judgePosition[4][0]),2)+Math.pow((y-judgePosition[4][1]),2))<30)
-        return -5;
-    if (Math.sqrt(Math.pow((x-judgePosition[5][0]),2)+Math.pow((y-judgePosition[5][1]),2))<30)
-        return -6;
-    if (Math.sqrt(Math.pow((x-judgePosition[6][0]),2)+Math.pow((y-judgePosition[6][1]),2))<30)
-        return -7;
-    if (Math.sqrt(Math.pow((x-judgePosition[7][0]),2)+Math.pow((y-judgePosition[7][1]),2))<30)
-        return -8;
-    if(x<y)
-        if(x+y<SIZE)
-            if(y<SIZE/2)
-                return 6;
-            else
-                return 5;
-        else
-        if(x<SIZE/2)
-            return 4;
-        else
-            return 3;
-    else
-    if(x+y>SIZE)
-        if(y>SIZE/2)
-            return 2;
-        else
-            return 1;
-    else
-    if(x>SIZE/2)
-        return 0;
-    else
-        return 7;
-}
+
 
 function update()
 {
     for (var i = 0; i < 8; i++)
     {
-        if ((tapMap[i].length!=0)&&((music.getTime()-tapMap[i][0].time)>250))//miss
+        if ((tapMap[i].length!=0)&&((music.getTime()-tapMap[i][0].time)>130))//miss
         {
             // noteMap[i][0].destroy();
             tapMap[i][0].destroy();
             tapMap[i].shift();
             console.log("miss");
-            display.add(i,3);
+            HanabiList.push(new Hanabi(i));
         }
         for (var j = 0; j < tapMap[i].length; j++)
             tapMap[i][j].update(music.getTime());
@@ -224,7 +178,7 @@ function update()
             holdMap[i][0].destroy(holdMap[i][0].pigusprite);
             holdMap[i].shift();
             console.log("miss");
-            display.add(i,3);
+            HanabiList.push(new Hanabi(i));
         }
         if ((holdMap[i].length!=0)&&(holdMap[i][0].hoding)&&((music.getTime()-holdMap[i][0].time-holdMap[i][0].holdtime)>130))//miss
         {
@@ -239,61 +193,15 @@ function update()
     }
     if (music.getIsEnd())
         display.showResult();
+    for(i=0;i<HanabiList.length;i++)
+        if(HanabiList[i].life>0)
+            HanabiList[i].draw();
+        else
+            {
+                HanabiList[i].cleanup();
+                HanabiList.splice(i--,1);
+            }
     requestAnimationFrame(update);
-}
-
-function Down(x,y)
-{
-    var touchArea = transPositiontoArea(x,y);
-    if(tapMap[touchArea].length!=0)
-    {
-        if(Math.abs(tapMap[touchArea][0].time - music.getTime()) < 100)
-        {
-            tapMap[touchArea][0].destroy();
-            tapMap[touchArea].shift();
-            console.log("perfect");
-            display.add(touchArea,0);
-        }
-        else if(Math.abs(tapMap[touchArea][0].time - music.getTime()) < 150)
-        {
-            tapMap[touchArea][0].destroy();
-            tapMap[touchArea].shift();
-            console.log("great");
-            display.add(touchArea,1);
-        }
-        else if(Math.abs(tapMap[touchArea][0].time - music.getTime()) < 200)
-        {
-            tapMap[touchArea][0].destroy();
-            tapMap[touchArea].shift();
-            console.log("good");
-            display.add(touchArea,2);
-        }
-    }
-    if(holdMap[touchArea].length!=0)
-    {
-        if(holdMap[touchArea][0].hoding == false)
-            if(Math.abs(holdMap[touchArea][0].time - music.getTime()) < 50)
-            {
-                holdMap[touchArea][0].taped = true;
-                holdMap[touchArea][0].hoding = true;
-                console.log("perfect");
-                display.add(touchArea,0);
-            }
-            else if(Math.abs(holdMap[touchArea][0].time - music.getTime()) < 80)
-            {
-                holdMap[touchArea][0].taped = true;
-                holdMap[touchArea][0].hoding = true;
-                console.log("great");
-                display.add(touchArea,1);
-            }
-            else if(Math.abs(holdMap[touchArea][0].time - music.getTime()) < 110)
-            {
-                holdMap[touchArea][0].taped = true;
-                holdMap[touchArea][0].hoding = true;
-                console.log("good");
-                display.add(touchArea,2);
-            }
-    }
 }
 function onMouseDown(e)
 {
@@ -302,28 +210,60 @@ function onMouseDown(e)
         waitDisplay.destroy();
         music.play();
     }
-    // for(var i=e.touches.length;i--;){
-    //     Down(e.touches.clientX,e.touches.clientY)
-    // }
-    Down(e.clientX,e.clientY);
-    // display.debugtext.setText(e.clientX+"|"+e.clientY);
-}
-
-function onPadDown(e)
-{
-    tapSE.play()
-    if(waitDisplay.isShow){
-        waitDisplay.destroy();
-        music.play();
-    }
     for(var i=e.touches.length;i--;){
-        Down(e.touches[i].clientX,e.touches[i].clientY)
-        // display.debugtext.setText(e.touches[i].clientX+"|"+e.touches[i].clientY);
+        var touch = e.touches[i];
+        var touchArea = transPositiontoArea(touch.clientX,touch.clientY);
+        if(tapMap[touchArea].length!=0)
+        {
+            if(Math.abs(tapMap[touchArea][0].time - music.getTime()) < 50)
+            {
+                tapMap[touchArea][0].destroy();
+                tapMap[touchArea].shift();
+                console.log("perfect");
+                display.add(touchArea,0);
+            }
+            else if(Math.abs(tapMap[touchArea][0].time - music.getTime()) < 80)
+            {
+                tapMap[touchArea][0].destroy();
+                tapMap[touchArea].shift();
+                console.log("great");
+                display.add(touchArea,1);
+            }
+            else if(Math.abs(tapMap[touchArea][0].time - music.getTime()) < 110)
+            {
+                tapMap[touchArea][0].destroy();
+                tapMap[touchArea].shift();
+                console.log("good");
+                display.add(touchArea,2);
+            }
+        }
+        if(holdMap[touchArea].length!=0)
+        {
+            if(holdMap[touchArea][0].hoding == false)
+                if(Math.abs(holdMap[touchArea][0].time - music.getTime()) < 50)
+                {
+                    holdMap[touchArea][0].taped = true;
+                    holdMap[touchArea][0].hoding = true;
+                    console.log("perfect");
+                    display.add(touchArea,0);
+                }
+                else if(Math.abs(holdMap[touchArea][0].time - music.getTime()) < 80)
+                {
+                    holdMap[touchArea][0].taped = true;
+                    holdMap[touchArea][0].hoding = true;
+                    console.log("great");
+                    display.add(touchArea,1);
+                }
+                else if(Math.abs(holdMap[touchArea][0].time - music.getTime()) < 110)
+                {
+                    holdMap[touchArea][0].taped = true;
+                    holdMap[touchArea][0].hoding = true;
+                    console.log("good");
+                    display.add(touchArea,2);
+                }
+        }
     }
-    // Down(e.clientX,e.clientY);
-
 }
-
 function onMouseUp(e)
 {
     var touchArea = transPositiontoArea(e.clientX,e.clientY);
@@ -367,31 +307,7 @@ function onMouseUp(e)
             }
     }
 }
-var movepre = 0;
-var movecount = 0;
-function onMouseMove(e){
-    console.log(e.clientX,e.clientY,music.getTime());
-    movecount+=1;
-    display.debugtext.setText(movecount+"|");
 
-    if (movepre != transPositiontoMoveArea(e.clientX,e.clientY)&&transPositiontoMoveArea(e.clientX,e.clientY)<0)
-    {
-        movepre = transPositiontoMoveArea(e.clientX,e.clientY);
-        console.log(transPositiontoMoveArea(e.clientX,e.clientY));
-        tapSE.play()
-        Down(e.clientX,e.clientY);
-        display.debugtext2.setText(display.debugtext2.text+"|"+transPositiontoMoveArea(e.clientX,e.clientY));
-
-        display.debugtext2count += 1;
-        if(display.debugtext2count == 16)
-        {
-            display.debugtext2.setText("0");
-            display.debugtext2count = 0;
-        }
-    }
-    movepre = transPositiontoMoveArea(e.clientX,e.clientY);
-
-}
 
 var Tap = function (type, time, position, double)
 {
@@ -407,7 +323,7 @@ Tap.prototype = {
     update:function (time) {
         //this.time -> 判定时间，perfect时间
         //time -> 当前时间
-        if((this.time - time < SPEED)&&(time-this.time < 250))//移动note时间区间
+        if((this.time - time < SPEED)&&(time-this.time < 130))//移动note时间区间
         {
             var x = (judgePosition[this.position][0] - startPosition[this.position][0])*(this.time-time)/SPEED-judgePosition[this.position][0];
             var y = (judgePosition[this.position][1] - startPosition[this.position][1])/SPEED*(this.time-time)-judgePosition[this.position][1];
@@ -605,7 +521,6 @@ var Display = function() {
     app.stage.addChild(this.baseCircle);
 
     this.judgeCircle = [[],[],[],[],[],[],[],[]];
-    this.judgeCircleGraphics = new PIXI.Graphics();
     this.combo = new PIXI.Text("0", {
         fontFamily: 'Arial',
         fontSize: 35,
@@ -623,83 +538,61 @@ var Display = function() {
     });
     this.combotext.position.set(540/2,540/2-80);
     this.combotext.anchor.set(0.5,0.5)
-
-    this.debugtext = new PIXI.Text("0", {
-        fontFamily: 'Arial',
-        fontSize: 20,
-        fill: 'red',
-        fontWeight:'bold'
-    });
-    this.debugtext.position.set(0,0);
-    app.stage.addChild(this.debugtext);
-    this.debugtextcount = 0;
-
-    this.debugtext2 = new PIXI.Text("0", {
-        fontFamily: 'Arial',
-        fontSize: 20,
-        fill: 'red',
-        fontWeight:'bold'
-    });
-    this.debugtext2.position.set(0,30);
-    app.stage.addChild(this.debugtext2);
-    this.debugtext2count = 0;
 }
 Display.prototype = {
     addCombo:function(){
         app.stage.addChild(this.combo);
         app.stage.addChild(this.combotext);
-        app.stage.addChild(this.judgeCircleGraphics);
     },
-    add:function (position, type)
-    {//perfect:0 great:1 good:2
-        if (type == 0)
-        {
-            this.combonum += 1;
-            this.comboCount[0] += 1;
-            this.judgeCircle[position][0] = music.getTime();
-            this.judgeCircle[position][1] = 0;
-        }
-        if (type == 1)
-        {
-            this.combonum += 1;
-            this.comboCount[1] += 1;
-            this.judgeCircle[position][0] = music.getTime();
-            this.judgeCircle[position][1] = 1;
-        }
-        if (type == 2)
-        {
-            this.combonum += 1;
-            this.comboCount[2] += 1;
-            this.judgeCircle[position][0] = music.getTime();
-            this.judgeCircle[position][1] = 2;
-        }
-        else if(type == 3)
-        {
-            this.combonum = 0;
-            this.comboCount[3] += 1;
-            this.judgeCircle[position][0] = (music.getTime());
-            this.judgeCircle[position][1] = 3;
-        }
-        this.combo.setText(this.combonum);
-    },
+    // add:function (position, type)
+    // {//perfect:0 great:1 good:2
+    //     if (type == 0)
+    //     {
+    //         this.combonum += 1;
+    //         this.comboCount[0] += 1;
+    //         this.judgeCircle[position][0] = music.getTime();
+    //         this.judgeCircle[position][1] = 0;
+    //     }
+    //     if (type == 1)
+    //     {
+    //         this.combonum += 1;
+    //         this.comboCount[1] += 1;
+    //         this.judgeCircle[position][0] = music.getTime();
+    //         this.judgeCircle[position][1] = 1;
+    //     }
+    //     if (type == 2)
+    //     {
+    //         this.combonum += 1;
+    //         this.comboCount[2] += 1;
+    //         this.judgeCircle[position][0] = music.getTime();
+    //         this.judgeCircle[position][1] = 2;
+    //     }
+    //     else if(type == 3)
+    //     {
+    //         this.combonum = 0;
+    //         this.comboCount[3] += 1;
+    //         this.judgeCircle[position][0] = (music.getTime());
+    //         this.judgeCircle[position][1] = 3;
+    //     }
+    //     this.combo.setText(this.combonum);
+    // },
     update:function ()
     {
-        this.judgeCircleGraphics.clear();
-        for (var i=0;i<8;i++)
-        {
-            if (music.getTime() - this.judgeCircle[i][0]< 250)//r = 0~50  t = 0~250ms
-            {
-                if(this.judgeCircle[i][1] == 0)
-                    this.judgeCircleGraphics.lineStyle(2, 0xDBDB00, 1);
-                else if(this.judgeCircle[i][1] == 1)
-                    this.judgeCircleGraphics.lineStyle(2, 0xFF00FF, 1);
-                else if(this.judgeCircle[i][1] == 2)
-                    this.judgeCircleGraphics.lineStyle(2, 0x6EDD61, 1);
-                else if(this.judgeCircle[i][1] == 3)
-                    this.judgeCircleGraphics.lineStyle(2, 0xCACACA, 1);
-                this.judgeCircleGraphics.drawCircle(judgePosition[i][0],judgePosition[i][1],(music.getTime() - this.judgeCircle[i][0])/5);
-            }
-        }
+        // for (var i=0;i<8;i++)
+        // {
+        //     if (music.getTime() - this.judgeCircle[i][0]< 250)//r = 0~50  t = 0~250ms
+        //     {
+        //         if(this.judgeCircle[i][1] == 0)
+        //             1;// this.judgeCircleGraphics.lineStyle(2, 0xDBDB00, 1);
+        //         else if(this.judgeCircle[i][1] == 1)
+        //             1;// this.judgeCircleGraphics.lineStyle(2, 0xFF00FF, 1);
+        //         else if(this.judgeCircle[i][1] == 2)
+        //             1;// this.judgeCircleGraphics.lineStyle(2, 0x6EDD61, 1);
+        //         else if(this.judgeCircle[i][1] == 3)
+        //             1;// this.judgeCircleGraphics.lineStyle(2, 0xCACACA, 1);
+        //         HanabiList.push(new Hanabi(i));
+        //     }
+        // }
     },
     showResult:function ()
     {
@@ -707,3 +600,49 @@ Display.prototype = {
         this.combo.setText("good:"+this.comboCount[2]+" miss:"+this.comboCount[3]);
     }
 }
+
+var Hanabi=function(pos){
+    console.log("hanabi")
+    this.pos = pos;
+    this.position = [];
+    this.vector = [];
+    this.num = 80;
+    for(var i=0;i< this.num*2;i+=2)
+    {
+        this.position.push(judgePosition[pos][0]);
+        this.position.push(judgePosition[pos][1]);        
+    }
+    for(var i=0;i< this.num*2;i+=2)
+    {
+        this.vector.push((Math.random()-0.5)*2);
+        this.vector.push((Math.random()-0.5)*2);        
+    }
+    this.life = 15;
+    this.bombCircleGraphics = new PIXI.Graphics();
+            app.stage.addChild(this.bombCircleGraphics);
+};
+Hanabi.prototype={
+
+  cleanup:function(){
+              this.bombCircleGraphics.clear();
+  },
+  draw:function(){
+        this.bombCircleGraphics.clear();
+    for(var i=0;i<this.num*2;i+=2){
+        
+            this.position[i]+=this.vector[i]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i];
+            this.position[i+1]+=this.vector[i+1]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i+1];
+    };
+    this.life -= 1;
+    this.bombCircleGraphics.lineStyle(0);
+    this.bombCircleGraphics.beginFill(0xFFFF0B, 0.5);
+    for(var i=0;i<this.num*2;i+=2){
+        this.bombCircleGraphics.drawCircle(this.position[i+0], this.position[i+1],2);
+        // console.log(this.position[i+1]);
+        // console.log(this.position[1]);
+    };
+    this.bombCircleGraphics.endFill();
+  }
+};
+
+var HanabiList=[new Hanabi(1)];
