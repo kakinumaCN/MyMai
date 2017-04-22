@@ -1,4 +1,4 @@
-var WELCOME = "Welcome to MyMai ver 0.422.1"
+var WELCOME = "Welcome to MyMai ver 0.422.3"
 console.log(WELCOME);
 // var canvas = document.getElementById('canvas');
 // var canvas = document.createElement('canvas');
@@ -69,7 +69,6 @@ var SPEED = 366;
 var noteResList = [];
 var tapMap = [[],[],[],[],[],[],[],[]];
 var holdMap = [[],[],[],[],[],[],[],[]];
-
 
 function gameLoad(loader, resources)
 {
@@ -156,7 +155,6 @@ function transPositiontoArea(x,y)
         return 7;
 }
 
-
 function update()
 {
     for (var i = 0; i < 8; i++)
@@ -167,7 +165,7 @@ function update()
             tapMap[i][0].destroy();
             tapMap[i].shift();
             console.log("miss");
-            HanabiList.push(new Hanabi(i));
+            display.add(i,3);
         }
         for (var j = 0; j < tapMap[i].length; j++)
             tapMap[i][j].update(music.getTime());
@@ -178,7 +176,7 @@ function update()
             holdMap[i][0].destroy(holdMap[i][0].pigusprite);
             holdMap[i].shift();
             console.log("miss");
-            HanabiList.push(new Hanabi(i));
+            display.add(i,3);
         }
         if ((holdMap[i].length!=0)&&(holdMap[i][0].hoding)&&((music.getTime()-holdMap[i][0].time-holdMap[i][0].holdtime)>130))//miss
         {
@@ -197,10 +195,10 @@ function update()
         if(HanabiList[i].life>0)
             HanabiList[i].draw();
         else
-            {
-                HanabiList[i].cleanup();
-                HanabiList.splice(i--,1);
-            }
+        {
+            HanabiList[i].cleanup();
+            HanabiList.splice(i--,1);
+        }
     requestAnimationFrame(update);
 }
 function onMouseDown(e)
@@ -307,7 +305,6 @@ function onMouseUp(e)
             }
     }
 }
-
 
 var Tap = function (type, time, position, double)
 {
@@ -482,7 +479,6 @@ Hold.prototype = {
     }
 };
 
-
 var WaitDisplay = function(){
     this.text = new PIXI.Text("welcome", {
         fontFamily: 'Arial',
@@ -544,38 +540,35 @@ Display.prototype = {
         app.stage.addChild(this.combo);
         app.stage.addChild(this.combotext);
     },
-    // add:function (position, type)
-    // {//perfect:0 great:1 good:2
-    //     if (type == 0)
-    //     {
-    //         this.combonum += 1;
-    //         this.comboCount[0] += 1;
-    //         this.judgeCircle[position][0] = music.getTime();
-    //         this.judgeCircle[position][1] = 0;
-    //     }
-    //     if (type == 1)
-    //     {
-    //         this.combonum += 1;
-    //         this.comboCount[1] += 1;
-    //         this.judgeCircle[position][0] = music.getTime();
-    //         this.judgeCircle[position][1] = 1;
-    //     }
-    //     if (type == 2)
-    //     {
-    //         this.combonum += 1;
-    //         this.comboCount[2] += 1;
-    //         this.judgeCircle[position][0] = music.getTime();
-    //         this.judgeCircle[position][1] = 2;
-    //     }
-    //     else if(type == 3)
-    //     {
-    //         this.combonum = 0;
-    //         this.comboCount[3] += 1;
-    //         this.judgeCircle[position][0] = (music.getTime());
-    //         this.judgeCircle[position][1] = 3;
-    //     }
-    //     this.combo.setText(this.combonum);
-    // },
+    add:function (position, type)
+    {//perfect:0 great:1 good:2
+        if (type == 0)
+        {
+            this.combonum += 1;
+            this.comboCount[0] += 1;
+            HanabiList.push(new Hanabi(position,0));
+
+        }
+        if (type == 1)
+        {
+            this.combonum += 1;
+            this.comboCount[1] += 1;
+            HanabiList.push(new Hanabi(position,1));
+        }
+        if (type == 2)
+        {
+            this.combonum += 1;
+            this.comboCount[2] += 1;
+            HanabiList.push(new Hanabi(position,2));
+        }
+        else if(type == 3)
+        {
+            this.combonum = 0;
+            this.comboCount[3] += 1;
+            HanabiList.push(new Hanabi(position,3));
+        }
+        this.combo.setText(this.combonum);
+    },
     update:function ()
     {
         // for (var i=0;i<8;i++)
@@ -601,8 +594,8 @@ Display.prototype = {
     }
 }
 
-var Hanabi=function(pos){
-    console.log("hanabi")
+var Hanabi=function(pos,color){
+    this.color = color
     this.pos = pos;
     this.position = [];
     this.vector = [];
@@ -622,27 +615,30 @@ var Hanabi=function(pos){
             app.stage.addChild(this.bombCircleGraphics);
 };
 Hanabi.prototype={
-
   cleanup:function(){
               this.bombCircleGraphics.clear();
   },
   draw:function(){
         this.bombCircleGraphics.clear();
     for(var i=0;i<this.num*2;i+=2){
-        
             this.position[i]+=this.vector[i]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i];
             this.position[i+1]+=this.vector[i+1]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i+1];
     };
     this.life -= 1;
-    this.bombCircleGraphics.lineStyle(0);
-    this.bombCircleGraphics.beginFill(0xFFFF0B, 0.5);
+    // this.bombCircleGraphics.lineStyle(0);
+
+    if(this.color == 0)
+        this.bombCircleGraphics.lineStyle(2, 0xDBDB00, 0.5);
+    else if(this.color == 1)
+        this.bombCircleGraphics.lineStyle(2, 0xFF00FF, 0.5);
+    else if(this.color == 2)
+        this.bombCircleGraphics.lineStyle(2, 0x6EDD61, 0.5);
+    else if(this.color == 3)
+        this.bombCircleGraphics.lineStyle(2, 0xCACACA, 0.5);
     for(var i=0;i<this.num*2;i+=2){
-        this.bombCircleGraphics.drawCircle(this.position[i+0], this.position[i+1],2);
-        // console.log(this.position[i+1]);
-        // console.log(this.position[1]);
+        this.bombCircleGraphics.drawCircle(this.position[i+0], this.position[i+1],1);
     };
     this.bombCircleGraphics.endFill();
   }
 };
-
 var HanabiList=[new Hanabi(1)];
