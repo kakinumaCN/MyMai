@@ -1,4 +1,4 @@
-var WELCOME = "Welcome to MyMai ver 0.422.3"
+var WELCOME = "Welcome to MyMai ver 0.424.1"
 console.log(WELCOME);
 // var canvas = document.getElementById('canvas');
 // var canvas = document.createElement('canvas');
@@ -60,7 +60,7 @@ pixiloader.add('map',BEATMAP)
     .add('img_double', "../../asset/image/double.png")
     .add('img_hold', "../../asset/image/hold.png")
     .add('img_line', "../../asset/image/line.png")
-    .add('img_bg', '../../asset/image/release_bg.png')
+    .add('img_bg', '../../asset/image/bg.png')
     .add('audio_perfect', "../../asset/sound/perfect.mp3")
     .add('audio_flick', "../../asset/sound/flick.mp3")
     .add('audio_music', "track.mp3")
@@ -78,6 +78,7 @@ function gameLoad(loader, resources)
     noteResList.push(resources['img_double']);
     noteResList.push(resources['img_hold']);
     noteResList.push(resources['img_line']);
+    noteResList.push(resources['img_bg']);
     //load map
     var map = loader.resources['map'].data;
     for (var i = 0;i < map.notes.length; i++)
@@ -118,6 +119,10 @@ function onAudioDecoded(res)
     //ロード画面消去
     document.body.removeChild(document.getElementById("loading"));
     app.stage.visible = true;
+    // var bg = new PIXI.Sprite(res['img_bg'].texture);
+    // app.stage.addChild(bg);
+    var bg = new PIXI.Sprite(noteResList[4].texture);
+    app.stage.addChild(bg);
     app.view.addEventListener("touchstart",onMouseDown);
     app.view.addEventListener("touchend",onMouseUp);
     app.view.addEventListener("mousedown",onMouseDown);
@@ -155,6 +160,7 @@ function transPositiontoArea(x,y)
         return 7;
 }
 
+var fps = 0;
 function update()
 {
     for (var i = 0; i < 8; i++)
@@ -200,6 +206,9 @@ function update()
             HanabiList.splice(i--,1);
         }
     requestAnimationFrame(update);
+    var thisfps = music.getTime() - fps;
+    display.debugtext.setText("FPS:" + parseInt(thisfps));
+    fps = music.getTime();
 }
 function onMouseDown(e)
 {
@@ -532,6 +541,17 @@ var Display = function() {
         fill: 'green',
         fontWeight:'bold'
     });
+
+      this.debugtext = new PIXI.Text("0", {
+        fontFamily: 'Arial',
+        fontSize: 20,
+        fill: 'red',
+        fontWeight:'bold'
+    });
+    this.debugtext.position.set(0,0);
+    app.stage.addChild(this.debugtext);
+
+
     this.combotext.position.set(540/2,540/2-80);
     this.combotext.anchor.set(0.5,0.5)
 }
@@ -599,7 +619,7 @@ var Hanabi=function(pos,color){
     this.pos = pos;
     this.position = [];
     this.vector = [];
-    this.num = 80;
+    this.num = 40;
     for(var i=0;i< this.num*2;i+=2)
     {
         this.position.push(judgePosition[pos][0]);
