@@ -11,7 +11,7 @@ var SIZE = 0;
 if (SCREEN_HEIGHT>SCREEN_WIDTH)
     SIZE = SCREEN_WIDTH;
 else
-    SIZE = SCREEN_HEIGHT;
+    SIZE = SCREEN_HEIGHT
 app.view.style.width = SIZE + 'px';
 app.view.style.height = SIZE + 'px';
 var SIN675 = 0.9238795;
