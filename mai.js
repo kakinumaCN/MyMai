@@ -1,4 +1,4 @@
-var WELCOME = "Welcome to MyMai ver 0.424.1"
+var WELCOME = "Welcome to MyMai ver 0.501.1"
 console.log(WELCOME);
 // var canvas = document.getElementById('canvas');
 // var canvas = document.createElement('canvas');
@@ -11,7 +11,7 @@ var SIZE = 0;
 if (SCREEN_HEIGHT>SCREEN_WIDTH)
     SIZE = SCREEN_WIDTH;
 else
-    SIZE = SCREEN_HEIGHT
+    SIZE = SCREEN_HEIGHT;
 app.view.style.width = SIZE + 'px';
 app.view.style.height = SIZE + 'px';
 var SIN675 = 0.9238795;
@@ -617,19 +617,19 @@ Display.prototype = {
 var Hanabi=function(pos,color){
     this.color = color
     this.pos = pos;
-    this.position = [];
-    this.vector = [];
-    this.num = 40;
-    for(var i=0;i< this.num*2;i+=2)
-    {
-        this.position.push(judgePosition[pos][0]);
-        this.position.push(judgePosition[pos][1]);        
-    }
-    for(var i=0;i< this.num*2;i+=2)
-    {
-        this.vector.push((Math.random()-0.5)*2);
-        this.vector.push((Math.random()-0.5)*2);        
-    }
+    // this.position = [];
+    // this.vector = [];
+    // this.num = 40;
+    // for(var i=0;i< this.num*2;i+=2)
+    // {
+    //     this.position.push(judgePosition[pos][0]);
+    //     this.position.push(judgePosition[pos][1]);        
+    // }
+    // for(var i=0;i< this.num*2;i+=2)
+    // {
+    //     this.vector.push((Math.random()-0.5)*2);
+    //     this.vector.push((Math.random()-0.5)*2);        
+    // }
     this.life = 15;
     this.bombCircleGraphics = new PIXI.Graphics();
             app.stage.addChild(this.bombCircleGraphics);
@@ -640,10 +640,10 @@ Hanabi.prototype={
   },
   draw:function(){
         this.bombCircleGraphics.clear();
-    for(var i=0;i<this.num*2;i+=2){
-            this.position[i]+=this.vector[i]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i];
-            this.position[i+1]+=this.vector[i+1]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i+1];
-    };
+    // for(var i=0;i<this.num*2;i+=2){
+    //         this.position[i]+=this.vector[i]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i];
+    //         this.position[i+1]+=this.vector[i+1]+(15-this.life)*0.2/Math.sqrt(this.vector[i]*this.vector[i]+this.vector[i+1]*this.vector[i+1])*this.vector[i+1];
+    // };
     this.life -= 1;
     // this.bombCircleGraphics.lineStyle(0);
 
@@ -654,10 +654,10 @@ Hanabi.prototype={
     else if(this.color == 2)
         this.bombCircleGraphics.lineStyle(2, 0x6EDD61, 0.5);
     else if(this.color == 3)
-        this.bombCircleGraphics.lineStyle(2, 0xCACACA, 0.5);
-    for(var i=0;i<this.num*2;i+=2){
-        this.bombCircleGraphics.drawCircle(this.position[i+0], this.position[i+1],1);
-    };
+        this.bombCircleGraphics.lineStyle(5, 0xCACACA, 0.5);
+    // for(var i=0;i<this.num*2;i+=2){
+        this.bombCircleGraphics.drawCircle(judgePosition[this.pos][0],judgePosition[this.pos][1], (15-this.life)*2);
+    // };
     this.bombCircleGraphics.endFill();
   }
 };
