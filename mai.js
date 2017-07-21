@@ -55,15 +55,17 @@ console.log(app.view);
 PIXI.loaders.Resource.setExtensionXhrType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
 PIXI.loaders.Resource.setExtensionLoadType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
 const pixiloader = PIXI.loader;
-pixiloader.add('map',BEATMAP)
-    .add('img_tap', "../../asset/image/tap.png")
-    .add('img_double', "../../asset/image/double.png")
-    .add('img_hold', "../../asset/image/hold.png")
-    .add('img_line', "../../asset/image/line.png")
-    .add('img_bg', '../../asset/image/bg.png')
-    .add('audio_perfect', "../../asset/sound/perfect.mp3")
-    .add('audio_flick', "../../asset/sound/flick.mp3")
-    .add('audio_music', "track.mp3")
+var debugPath = './'
+var releasePath = '../../'
+pixiloader.add('map',debugPath + BEATMAP)
+    .add('img_tap', debugPath + "asset/image/tap.png")
+    .add('img_double',debugPath +  "asset/image/double.png")
+    .add('img_hold',debugPath +  "asset/image/hold.png")
+    .add('img_line',debugPath +  "asset/image/line.png")
+    .add('img_bg',debugPath +  'asset/image/bg.png')
+    .add('audio_perfect',debugPath +  "asset/sound/perfect.mp3")
+    .add('audio_flick',debugPath +  "asset/sound/flick.mp3")
+    .add('audio_music',debugPath +  "track.mp3")
     .load(gameLoad);
 var SPEED = 366;
 var noteResList = [];
