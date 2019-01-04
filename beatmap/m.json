@@ -1,0 +1,12 @@
+{
+  "notes":[
+    {"time":2,"type":0,"position":0},
+	{"time":2.5,"type":0,"position":1},
+	{"time":3,"type":0,"position":2},
+	{"time":3.5,"type":0,"position":3},
+	{"time":4,"type":0,"position":4},
+	{"time":4.5,"type":0,"position":5},
+	{"time":5,"type":0,"position":6},
+	{"time":5.5,"type":0,"position":7}
+  ]
+}
