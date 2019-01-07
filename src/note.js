@@ -48,11 +48,28 @@ Tap.prototype = {
     },
     judge: function (judgetime) {
         //0p1gr2go3mi
-        app.stage.removeChild(this._sprite);
+        // console.log(judgetime - this.perfecttime,-JUDGETIME[2])
+        if(this.perfecttime - judgetime > JUDGETIME[2])
+            console.log('XD')
+        else {
+            if(judgetime - this.perfecttime > JUDGETIME[3])
+                console.log('miss')  
+            else{
+                if(Math.abs(this.perfecttime - judgetime) < JUDGETIME[0])
+                    console.log('pe')
+                else if(Math.abs(this.perfecttime - judgetime) < JUDGETIME[1])
+                    console.log('gr')
+                else if(Math.abs(this.perfecttime - judgetime) < JUDGETIME[2])
+                    console.log('go')
+            }
+            this._destroy();
+        }
     },
     _destroy: function (judgetime) {
         //0p1gr2go3mi
         app.stage.removeChild(this._sprite);
+        // pop beatmap
+        gm.beatmap[0][this.position].shift();
     },
     _draw: function () {
         //init draw
