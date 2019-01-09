@@ -11,7 +11,7 @@ function onTouchDown(e){
 }
 
 function _onDown(x,y){
-    _debuglog(0,'tap' + _canvco2area(x,y));
-    if(gm.beatmap[0][_canvco2area(x,y)].length)
+    _debuglog(0,['tap' + _canvco2area(x,y), x, y]);
+    if(gm.beatmap[0][_canvco2area(x,y)].length)// TODO area = -1
         gm.beatmap[0][_canvco2area(x,y)][0].judge(gm.audiores[0].getTime())
 }

@@ -5,6 +5,7 @@ var GameManager = function () {
         [[], [], [], [], [], [], [], []],
         [[], [], [], [], [], [], [], []]
     ];
+    this.displaylist = [];
     // this.sprites = [];
     this.isstart = false;
 }
@@ -55,6 +56,9 @@ GameManager.prototype = {
             for(var j=0;j<this.beatmap[0][i].length;j++){
                 this.beatmap[0][i][j].update(this.audiores[0].getTime());
             }
+        }
+        for(i in this.displaylist){
+            this.displaylist[i].update(this.audiores[0].getTime());
         }
     },
     loadImgRes: function(res){

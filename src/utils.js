@@ -9,45 +9,11 @@ function _viewco2canvco(x,y)
 }
 
 function _canvco2area(cx,cy)
-{   
+{   if(cy < GAMEVIEWSIZE/3)
+        return -1;
     x = _viewco2canvco(cx,cy)[0];
     y = _viewco2canvco(cx,cy)[1];
-    if(x>0){
-        if(y>0){
-            if(x>y){
-                return 2;
-            }
-            else{
-                return 3;
-            }
-        }
-        else{
-            if(x>-y){
-                return 1;
-            }
-            else{
-                return 0;
-            }
-        }
-    }
-    else{
-        if(y>0){
-            if(-x>y){
-                return 5;
-            }
-            else{
-                return 4;
-            }
-        }
-        else{
-            if(-x>-y){
-                return 6;
-            }
-            else{
-                return 7;
-            }
-        }
-    }
+    if(x>0){if(y>0){if(x>y){return 2;}else{return 3;}}else{if(x>-y){return 1;}else{return 0;}}}else{if(y>0){if(-x>y){return 5;}else{return 4;}}else{if(-x>-y){return 6;}else{return 7;}}}
 }
 
 function _debuglog(type,lg)
