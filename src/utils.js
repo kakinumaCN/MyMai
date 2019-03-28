@@ -24,6 +24,22 @@ function _debuglog(type,lg)
     }
 }
 
+function _debugprint(type,lg)
+{
+    if(ISDEBUG)
+    {
+        debugprinttext = new PIXI.Text("0", {
+            fontFamily: 'Arial',
+            fontSize: 35,
+            fill: 'green',
+            fontWeight: 'bold'
+        }); 
+        debugprinttext.text = lg;
+        debugprinttext.position.set(0,0);
+        app.stage.addChild(debugprinttext);
+    }
+}
+
 function _debugprintgamearea()
 {
     //print cojudge

@@ -13,6 +13,8 @@ Tap.prototype = {
         if(this._isdstroyed){
             return 0;
         }
+        if(AUTOGAME && nowtime > this.perfecttime)
+            this.judge(nowtime);
         if(this.perfecttime - nowtime > GAMESPEED + GAMESPEED*SPEEDSCALE){
             //phase1 disable
         }

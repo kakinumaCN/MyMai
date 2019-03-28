@@ -8,11 +8,13 @@ var GameManager = function () {
     this.displaylist = [];
     // this.sprites = [];
     this.isstart = false;
+    this.isupdate = false;
 }
 GameManager.prototype = {
     init: function(){
 
         app.view.addEventListener("mousedown", onMouseDown);
+        app.view.addEventListener("touchstart", onTouchDown);
 
         PIXI.loaders.Resource.setExtensionXhrType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
         PIXI.loaders.Resource.setExtensionLoadType("mp3", PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER);
@@ -39,7 +41,7 @@ GameManager.prototype = {
                     .add('audio_flick', resource['audio_flick'].data)
                     .decode((res)=>{
                         gm.loadAudioRes(res); 
-                        // main loop update();
+                        _debugprint(0,'tap2start');
                     });
             });
     },
@@ -47,8 +49,8 @@ GameManager.prototype = {
         mainloop();
     },
     update: function(){
-        if(!this.isstart){
-            this.isstart = true;
+        if(!this.isupdate){
+            this.isupdate = true;
             this.audiores[0].play();
         }
 
