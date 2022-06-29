@@ -65,7 +65,7 @@ pixiloader.add('map',debugPath + BEATMAP)
     .add('img_bg',debugPath +  'asset/image/bg.png')
     .add('audio_perfect',debugPath +  "asset/sound/perfect.mp3")
     .add('audio_flick',debugPath +  "asset/sound/flick.mp3")
-    .add('audio_music',debugPath +  "track.mp3")
+    .add('audio_music',debugPath +  SONG)
     .load(gameLoad);
 var SPEED = 366;
 var noteResList = [];
